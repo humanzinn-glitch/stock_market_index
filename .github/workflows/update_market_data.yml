@@ -22,6 +22,7 @@ jobs:
       PUBLISH_DESTINATION: ${{ github.event.inputs.publish_destination || 'local' }}
       GOOGLE_DRIVE_FOLDER_ID: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
       GOOGLE_SERVICE_ACCOUNT_JSON_BASE64: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON_BASE64 }}
+      STOOQ_APIKEY: ${{ secrets.STOOQ_APIKEY }}
 
     steps:
       - name: Check out repository
@@ -43,8 +44,15 @@ jobs:
       - name: Update Nikkei 225 index
         run: python scripts/update_nikkei225_index.py --repo-root .
 
+      - name: Check Stooq API key
+        run: |
+          if [ -z "$STOOQ_APIKEY" ]; then
+            echo "STOOQ_APIKEY GitHub Actions secret is not configured."
+            exit 1
+          fi
+
       - name: Update prices from fixed constituents CSV
-        run: python scripts/update_nikkei225_prices.py --repo-root . --batch-size 75 --retries 2 --batch-sleep-seconds 1.0 --rate-limit-cooldown-seconds 30
+        run: python scripts/update_nikkei225_prices.py --repo-root . --retries 2 --sleep-seconds 0.25 --lookback-calendar-days 60
 
       - name: Scan VOLBRK v2 across all 225 constituents
         id: volbrk_scan
