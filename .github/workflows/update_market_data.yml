@@ -3,7 +3,9 @@ name: Update market data
 on:
   workflow_dispatch:
   schedule:
-    - cron: '5 8 * * 1-5'
+    # Yahoo! Finance Japan says Japanese-stock daily charts update around 20:30 JST.
+    # Run at 21:05 JST (12:05 UTC) so the target session is normally available.
+    - cron: '5 12 * * 1-5'
 
 permissions:
   contents: write
