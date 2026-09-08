@@ -8,8 +8,8 @@ on:
         required: false
         default: local
   schedule:
-    # 07:45 UTC = 16:45 JST
-    - cron: '45 7 * * 1-5'
+    # 08:05 UTC = 17:05 JST; allow time for confirmed Japan-market EOD data
+    - cron: '5 8 * * 1-5'
 
 permissions:
   contents: write
@@ -37,11 +37,28 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install google-api-python-client google-auth
 
+      - name: Test VOLBRK v2 scanner
+        run: python tests/test_volbrk_v2.py
+
       - name: Update Nikkei 225 index
         run: python scripts/update_nikkei225_index.py --repo-root .
 
       - name: Update prices from fixed constituents CSV
         run: python scripts/update_nikkei225_prices.py --repo-root . --price-provider yahoo --retries 5 --sleep-seconds 1.2 --rate-limit-cooldown-seconds 180 --rate-limit-max-retries 1
+
+      - name: Scan VOLBRK v2 across all 225 constituents
+        id: volbrk_scan
+        continue-on-error: true
+        run: python scripts/scan_volbrk_v2.py --repo-root .
+
+      - name: Show VOLBRK v2 result
+        if: always()
+        run: |
+          if [ -f data/signals/volbrk_v2/latest.txt ]; then
+            cat data/signals/volbrk_v2/latest.txt
+          else
+            echo "判定不能：全225銘柄の完全照合未完了"
+          fi
 
       - name: Build Tableau exports locally
         if: ${{ !(((github.event_name == 'schedule') || env.PUBLISH_DESTINATION == 'google-drive') && env.GOOGLE_DRIVE_FOLDER_ID != '' && env.GOOGLE_SERVICE_ACCOUNT_JSON_BASE64 != '') }}
@@ -52,13 +69,20 @@ jobs:
         run: python scripts/build_and_publish_tableau_feed.py --repo-root . --publish-destination google-drive
 
       - name: Commit and push if data changed
+        if: always()
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/
           if git diff --cached --quiet; then
             echo "No data changes to commit."
-            exit 0
+          else
+            git commit -m "Update market data and VOLBRK v2 signals"
+            git push
           fi
-          git commit -m "Update market data"
-          git push
+
+      - name: Fail if VOLBRK v2 scan was incomplete
+        if: ${{ steps.volbrk_scan.outcome == 'failure' }}
+        run: |
+          echo "判定不能：全225銘柄の完全照合未完了"
+          exit 1
