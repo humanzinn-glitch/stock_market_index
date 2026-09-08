@@ -44,7 +44,7 @@ jobs:
         run: python scripts/update_nikkei225_index.py --repo-root .
 
       - name: Update prices from fixed constituents CSV
-        run: python scripts/update_nikkei225_prices.py --repo-root . --price-provider yahoo --retries 5 --sleep-seconds 1.2 --rate-limit-cooldown-seconds 180 --rate-limit-max-retries 1
+        run: python scripts/update_nikkei225_prices.py --repo-root . --batch-size 75 --retries 2 --batch-sleep-seconds 1.0 --rate-limit-cooldown-seconds 30
 
       - name: Scan VOLBRK v2 across all 225 constituents
         id: volbrk_scan
