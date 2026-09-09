@@ -1,1 +1,1 @@
-﻿trade_date,code,company_name,close,prior_20d_high,volume,prior_20d_avg_volume,volume_multiple
+﻿trade_date,code,company_name,data_status,reason,latest_source_date,close,prior_20d_high,volume,prior_20d_avg_volume,volume_multiple,signal,source
