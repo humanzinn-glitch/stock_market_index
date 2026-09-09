@@ -6,10 +6,6 @@ from zoneinfo import ZoneInfo
 LOOKBACK=20; VM=2.5; JST=ZoneInfo('Asia/Tokyo')
 
 def expected_latest_session():
- # Scheduled run is after the TSE close. On overnight/manual runs, use the
- # previous weekday until the current day's close. Japanese holidays are
- # caught safely by the freshness/completeness check instead of silently
- # falling back to an older common date.
  now=datetime.now(JST)
  d=now.date() if now.hour>=16 else now.date()-timedelta(days=1)
  while d.weekday()>=5: d-=timedelta(days=1)
@@ -46,13 +42,13 @@ def main():
  with (out/'latest.csv').open('w',encoding='utf-8-sig',newline='') as f:
   w=csv.DictWriter(f,fieldnames=sf); w.writeheader(); w.writerows({k:r[k] for k in sf} for r in signals)
  complete=len(audit)==len(cons) and not missing
- status={'strategy':'VOLBRK v2 Prime','date':target,'universe':len(cons),'checked':len(audit),'signals':len(signals),'complete':complete,'missing':missing[:100],'latest_common_source_date':common_latest}
+ coverage=round(len(audit)/len(cons)*100,2) if cons else 0
+ status={'strategy':'VOLBRK v2 Prime','date':target,'universe':len(cons),'checked':len(audit),'coverage_pct':coverage,'signals':len(signals),'complete':complete,'missing_count':len(missing),'missing':missing[:100],'latest_common_source_date':common_latest}
  (out/'latest.json').write_text(json.dumps(status,ensure_ascii=False,indent=2),encoding='utf-8')
- lines=[f'VOLBRK v2 Prime | target {target}',f'照合: {len(audit)}/{len(cons)}',f'取得データ全銘柄共通最新日: {common_latest}']
- if complete:
-  lines.append('本日は新規買いシグナルなし' if not signals else f'買いシグナル {len(signals)}銘柄')
-  for r in signals: lines.append(f"{r['code']} {r['company_name']} | 終値 {r['close']:,.2f} | 出来高倍率 {r['volume_multiple']:.2f}x | 翌営業日寄付き買い候補")
- else:
-  lines.append(f'判定不能：対象営業日 {target} のプライム全銘柄完全照合未完了（不足 {len(missing)}）')
- (out/'latest.txt').write_text('\n'.join(lines)+'\n',encoding='utf-8'); print('\n'.join(lines)); return 0 if complete else 2
+ lines=[f'VOLBRK v2 Prime | target {target}',f'判定可能: {len(audit)}/{len(cons)}銘柄（{coverage:.2f}%）',f'判定不能: {len(missing)}銘柄']
+ if not complete: lines.append('※取得できた銘柄のみで暫定判定')
+ lines.append('判定可能銘柄では新規買いシグナルなし' if not signals else f'買いシグナル {len(signals)}銘柄')
+ for r in signals: lines.append(f"{r['code']} {r['company_name']} | 終値 {r['close']:,.2f} | 出来高倍率 {r['volume_multiple']:.2f}x | 翌営業日寄付き買い候補")
+ if missing: lines.append('未判定コード: '+', '.join(missing[:20])+(' ...' if len(missing)>20 else ''))
+ (out/'latest.txt').write_text('\n'.join(lines)+'\n',encoding='utf-8'); print('\n'.join(lines)); return 0
 if __name__=='__main__': sys.exit(main())
