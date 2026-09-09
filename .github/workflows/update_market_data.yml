@@ -2,91 +2,134 @@ name: Update market data
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['scripts/**', 'requirements-scan.txt', '.github/workflows/update_market_data.yml']
   schedule:
-    # Yahoo! Finance Japan says Japanese-stock daily charts update around 20:30 JST.
-    # Run at 21:05 JST (12:05 UTC) so the target session is normally available.
     - cron: '5 12 * * 1-5'
 
 permissions:
   contents: write
 
+concurrency:
+  group: prime-market-data
+  cancel-in-progress: false
+
 jobs:
   universe:
     runs-on: ubuntu-latest
+    outputs:
+      target: ${{ steps.target.outputs.date }}
+      matrix: ${{ steps.target.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install openpyxl
-      - name: Build latest TSE Prime universe from JPX
+      - run: pip install -r requirements-scan.txt
+      - run: python -m unittest discover -s tests -p test_prime_scan.py
+      - name: Build latest ordinary-share universe from JPX
         run: python scripts/build_tse_prime_universe.py
+      - name: Pin session and chunk count for this run
+        id: target
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import csv, json, math, sys
+          sys.path.insert(0, 'scripts')
+          from volbrk_core import target_session
+          with open('data/constituents/tse_prime/current.csv', encoding='utf-8-sig') as f:
+              count = len(list(csv.DictReader(f)))
+          print('date=' + target_session())
+          print('matrix=' + json.dumps(list(range(math.ceil(count/25)))))
+          PY
       - uses: actions/upload-artifact@v4
         with:
           name: prime-universe
           path: data/constituents/tse_prime/current.csv
+          if-no-files-found: error
 
   fetch-prices:
     needs: universe
     name: Prime Yahoo chunk ${{ matrix.chunk }}
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     strategy:
       fail-fast: false
-      max-parallel: 20
+      max-parallel: 8
       matrix:
-        chunk: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67]
+        chunk: ${{ fromJSON(needs.universe.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - run: pip install -r requirements-scan.txt
       - uses: actions/download-artifact@v4
         with:
           name: prime-universe
           path: data/constituents/tse_prime
-      - name: Fetch Prime chunk
-        run: python scripts/fetch_prime_yahoo_chunk.py --chunk ${{ matrix.chunk }} --chunk-size 25
-      - name: Upload chunk
+      - name: Fetch and validate chunk
+        env:
+          TARGET: ${{ needs.universe.outputs.target }}
+        run: python scripts/fetch_prime_yahoo_chunk.py --chunk ${{ matrix.chunk }} --chunk-size 25 --as-of "$TARGET" --workers 2
+      - name: Preserve partial data and errors
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: prime-chunk-${{ matrix.chunk }}
           path: runtime/prime_chunks/
           if-no-files-found: error
+          retention-days: 14
 
   scan:
     needs: [universe, fetch-prices]
-    if: always()
+    if: ${{ always() && needs.universe.result == 'success' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - run: pip install -r requirements-scan.txt
       - uses: actions/download-artifact@v4
         with:
           name: prime-universe
           path: data/constituents/tse_prime
       - uses: actions/download-artifact@v4
+        continue-on-error: true
         with:
           pattern: prime-chunk-*
           path: runtime/prime_chunks
           merge-multiple: true
-      - name: Scan VOLBRK v2 across TSE Prime
+      - name: Scan every target and publish its status
         id: prime_scan
         continue-on-error: true
-        run: python scripts/scan_prime_volbrk_v2.py
-      - name: Show result
+        env:
+          TARGET: ${{ needs.universe.outputs.target }}
+        run: python scripts/scan_prime_volbrk_v2.py --as-of "$TARGET"
+      - name: Preserve the audit and inputs
         if: always()
-        run: cat data/signals/volbrk_v2_prime/latest.txt || true
-      - name: Commit verified result
-        if: ${{ steps.prime_scan.outcome == 'success' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: prime-scan-audit
+          path: |
+            data/signals/volbrk_v2_prime/
+            runtime/prime_chunks/
+          retention-days: 30
+      - name: Save status including incomplete runs
+        if: ${{ always() && steps.prime_scan.outcome != 'skipped' }}
         run: |
+          cat data/signals/volbrk_v2_prime/latest.txt >> "$GITHUB_STEP_SUMMARY"
+          mkdir -p data/signals/volbrk_v2_prime/runs
+          cp data/signals/volbrk_v2_prime/latest.json "data/signals/volbrk_v2_prime/runs/${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}.json"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/constituents/tse_prime data/signals/volbrk_v2_prime
-          git commit -m "Update TSE Prime VOLBRK v2 scan" || exit 0
-          git push
-      - name: Fail if incomplete
-        if: ${{ steps.prime_scan.outcome == 'failure' }}
+          if ! git diff --cached --quiet; then
+            git commit -m "Record VOLBRK scan status and coverage"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Fail if data is incomplete
+        if: ${{ steps.prime_scan.outcome != 'success' }}
         run: exit 1

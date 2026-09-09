@@ -1,54 +1,131 @@
 #!/usr/bin/env python3
-import csv,json,sys
-from datetime import datetime,timedelta
+"""Audit every ordinary share, publish partial results, fail CI on incomplete data."""
+import argparse
+import csv
+import hashlib
+import json
+import os
+import sys
+from collections import Counter
+from datetime import datetime
 from pathlib import Path
-from zoneinfo import ZoneInfo
-LOOKBACK=20; VM=2.5; JST=ZoneInfo('Asia/Tokyo')
 
-def expected_latest_session():
- now=datetime.now(JST)
- d=now.date() if now.hour>=16 else now.date()-timedelta(days=1)
- while d.weekday()>=5: d-=timedelta(days=1)
- return d.isoformat()
+from volbrk_core import JST, VERSION, evaluate, ordinary_code, target_session, window_dates
+
+
+def read_csv(path):
+    with path.open(encoding='utf-8-sig', newline='') as f:
+        return list(csv.DictReader(f))
+
+
+def write_csv(path, rows, fields):
+    with path.open('w', encoding='utf-8-sig', newline='') as f:
+        writer = csv.DictWriter(f, fieldnames=fields, extrasaction='ignore')
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def scan(repo, target, input_dir, out_dir, now=None):
+    now = now or datetime.now(JST)
+    out = repo / out_dir
+    out.mkdir(parents=True, exist_ok=True)
+    errors, audit, signals, excluded = [], [], [], []
+    cons, gathered, conflicts, hashes = [], {}, set(), {}
+    cp = repo / 'data/constituents/tse_prime/current.csv'
+    try:
+        raw_cons = read_csv(cp)
+        codes = [c['code'] for c in raw_cons]
+        if not codes or len(codes) != len(set(codes)):
+            raise ValueError('EMPTY_OR_DUPLICATE_UNIVERSE')
+        cons = [c for c in raw_cons if ordinary_code(c['code'])]
+        excluded = [c for c in raw_cons if not ordinary_code(c['code'])]
+        if not cons:
+            raise ValueError('EMPTY_ORDINARY_UNIVERSE')
+        dates = window_dates(target, now)
+        for path in sorted((repo / input_dir).glob('chunk_*.csv')):
+            hashes[path.name] = hashlib.sha256(path.read_bytes()).hexdigest()
+            try:
+                for row in read_csv(path):
+                    code, day = row['code'], row['date']
+                    old = gathered.setdefault(code, {}).get(day)
+                    if old and any(old.get(k) != row.get(k) for k in ('open','high','low','close','volume')):
+                        conflicts.add((code, day))
+                    gathered[code][day] = row
+            except Exception as exc:
+                errors.append(f'{path.name}: {type(exc).__name__}: {exc}')
+        for c in cons:
+            code = c['code']
+            data = gathered.get(code, {})
+            row = {'trade_date': target, 'code': code, 'company_name': c['company_name'],
+                   'data_status': 'UNVERIFIED', 'reason': '', 'latest_source_date': max(data, default=''),
+                   'source': data.get(target, {}).get('source', '')}
+            try:
+                if any((code, d) in conflicts for d in dates):
+                    raise ValueError('CONFLICTING_DUPLICATE')
+                row.update(evaluate(data, dates))
+                row['data_status'] = 'VERIFIED'
+                if row['signal']:
+                    signals.append(dict(row))
+            except (ValueError, KeyError, TypeError) as exc:
+                row['reason'] = str(exc)
+            audit.append(row)
+    except Exception as exc:
+        errors.append(f'{type(exc).__name__}: {exc}')
+    checked = sum(r['data_status'] == 'VERIFIED' for r in audit)
+    complete = bool(cons) and checked == len(cons) and not errors
+    state = 'COMPLETE' if complete else ('PARTIAL' if checked and not errors else 'UNAVAILABLE')
+    # A malformed batch makes its completeness unknowable. Never publish candidates from it.
+    if errors:
+        signals = []
+    count = len(signals) if checked and not errors else None
+    status = {'strategy': 'VOLBRK v2 Prime', 'rule_version': VERSION,
+              'date': target, 'generated_at_jst': now.isoformat(timespec='seconds'),
+              'source_commit': os.environ.get('GITHUB_SHA', ''),
+              'run_id': os.environ.get('GITHUB_RUN_ID', ''),
+              'status': state, 'universe': len(cons), 'excluded_nonordinary_count': len(excluded),
+              'symbols_with_input': sum(bool(gathered.get(c['code'])) for c in cons),
+              'checked': checked, 'coverage_pct': round(100*checked/len(cons), 2) if cons else 0,
+              'signals': count, 'complete': complete, 'missing_count': len(cons)-checked,
+              'reason_counts': dict(Counter(r['reason'] for r in audit if r['reason'])),
+              'errors': errors, 'signal_rows': signals,
+              'universe_sha256': hashlib.sha256(cp.read_bytes()).hexdigest() if cp.exists() else None,
+              'input_sha256': hashes,
+              'rules': {'lookback_sessions': 20, 'price': 'close > max(prior 20 highs)',
+                        'volume_multiple_min': 2.5, 'entry': 'next session open candidate'}}
+    if state == 'UNAVAILABLE':
+        message = '判定不能：検証済みの結果を提示できません。シグナル数は不明です。'
+    elif not complete:
+        message = f'部分判定：検証済み{checked}銘柄内の条件一致は{count}銘柄。未判定分は不明です。'
+    else:
+        message = f'全対象判定済み：条件一致{count}銘柄。'
+    status['message'] = message
+    lines = [f'VOLBRK v2 Prime | 判定日 {target}', message,
+             f'判定可能: {checked}/{len(cons)}銘柄（{status["coverage_pct"]:.2f}%）',
+             f'未判定: {len(cons)-checked}銘柄 / 普通株以外の除外: {len(excluded)}銘柄']
+    for r in signals:
+        lines.append(f'{r["code"]} {r["company_name"]} | 終値 {r["close"]:,.2f} | 直前20日高値 {r["prior_20d_high"]:,.2f} | 出来高 {r["volume_multiple"]:.4f}倍 | 翌営業日寄付きの候補')
+    lines += [f'未判定理由: {status["reason_counts"]}', *errors]
+    fields = ['trade_date','code','company_name','data_status','reason','latest_source_date',
+              'close','prior_20d_high','volume','prior_20d_avg_volume','volume_multiple','signal','source']
+    write_csv(out/'audit_latest.csv', audit, fields)
+    write_csv(out/'latest.csv', signals, fields)
+    write_csv(out/'excluded_latest.csv', excluded, ['code','company_name','ticker_tse'])
+    (out/'latest.txt').write_text('\n'.join(lines)+'\n', encoding='utf-8')
+    # JSON is written last and serves as the result manifest; never leave a previous success on errors.
+    (out/'latest.json').write_text(json.dumps(status, ensure_ascii=False, indent=2)+'\n', encoding='utf-8')
+    print('\n'.join(lines))
+    return 0 if complete else 2
+
 
 def main():
- cp=Path('data/constituents/tse_prime/current.csv')
- with cp.open(encoding='utf-8-sig',newline='') as f: cons=list(csv.DictReader(f))
- gathered={}
- for p in Path('runtime/prime_chunks').glob('chunk_*.csv'):
-  with p.open(encoding='utf-8-sig',newline='') as f:
-   for r in csv.DictReader(f): gathered.setdefault(r['code'],{})[r['date']]=r
+    ap = argparse.ArgumentParser()
+    ap.add_argument('--repo-root', default='.')
+    ap.add_argument('--as-of')
+    ap.add_argument('--input-dir', default='runtime/prime_chunks')
+    ap.add_argument('--out-dir', default='data/signals/volbrk_v2_prime')
+    args = ap.parse_args()
+    return scan(Path(args.repo_root), args.as_of or target_session(), args.input_dir, args.out_dir)
 
- date_sets=[set(gathered.get(c['code'],{})) for c in cons]
- common_dates=set.intersection(*date_sets) if date_sets and all(date_sets) else set()
- common_latest=max(common_dates) if common_dates else 'N/A'
- target=expected_latest_session()
 
- audit=[];signals=[];missing=[]
- for c in cons:
-  bd=gathered.get(c['code'],{}); ds=sorted(bd); idx=ds.index(target) if target in bd else -1
-  if idx<LOOKBACK: missing.append(c['code']); continue
-  prior=[bd[d] for d in ds[idx-LOOKBACK:idx]]; cur=bd[target]
-  ph=max(float(r['high']) for r in prior); av=sum(float(r['volume']) for r in prior)/LOOKBACK; vm=float(cur['volume'])/av if av>0 else 0
-  sig=float(cur['close'])>ph and vm>=VM
-  row={'trade_date':target,'code':c['code'],'company_name':c['company_name'],'close':float(cur['close']),'prior_20d_high':ph,'volume':int(float(cur['volume'])),'prior_20d_avg_volume':round(av,2),'volume_multiple':round(vm,4),'signal':sig}
-  audit.append(row)
-  if sig: signals.append(row)
- out=Path('data/signals/volbrk_v2_prime'); out.mkdir(parents=True,exist_ok=True)
- fields=list(audit[0].keys()) if audit else ['trade_date','code']
- with (out/'audit_latest.csv').open('w',encoding='utf-8-sig',newline='') as f:
-  w=csv.DictWriter(f,fieldnames=fields); w.writeheader(); w.writerows(audit)
- sf=['trade_date','code','company_name','close','prior_20d_high','volume','prior_20d_avg_volume','volume_multiple']
- with (out/'latest.csv').open('w',encoding='utf-8-sig',newline='') as f:
-  w=csv.DictWriter(f,fieldnames=sf); w.writeheader(); w.writerows({k:r[k] for k in sf} for r in signals)
- complete=len(audit)==len(cons) and not missing
- coverage=round(len(audit)/len(cons)*100,2) if cons else 0
- status={'strategy':'VOLBRK v2 Prime','date':target,'universe':len(cons),'checked':len(audit),'coverage_pct':coverage,'signals':len(signals),'complete':complete,'missing_count':len(missing),'missing':missing[:100],'latest_common_source_date':common_latest}
- (out/'latest.json').write_text(json.dumps(status,ensure_ascii=False,indent=2),encoding='utf-8')
- lines=[f'VOLBRK v2 Prime | target {target}',f'判定可能: {len(audit)}/{len(cons)}銘柄（{coverage:.2f}%）',f'判定不能: {len(missing)}銘柄']
- if not complete: lines.append('※取得できた銘柄のみで暫定判定')
- lines.append('判定可能銘柄では新規買いシグナルなし' if not signals else f'買いシグナル {len(signals)}銘柄')
- for r in signals: lines.append(f"{r['code']} {r['company_name']} | 終値 {r['close']:,.2f} | 出来高倍率 {r['volume_multiple']:.2f}x | 翌営業日寄付き買い候補")
- if missing: lines.append('未判定コード: '+', '.join(missing[:20])+(' ...' if len(missing)>20 else ''))
- (out/'latest.txt').write_text('\n'.join(lines)+'\n',encoding='utf-8'); print('\n'.join(lines)); return 0
-if __name__=='__main__': sys.exit(main())
+if __name__ == '__main__':
+    sys.exit(main())

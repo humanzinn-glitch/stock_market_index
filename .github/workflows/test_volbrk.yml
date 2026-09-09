@@ -1,0 +1,17 @@
+name: Test VOLBRK audit
+on:
+  pull_request:
+    paths: ['scripts/**', 'tests/**', 'requirements-scan.txt', '.github/workflows/**']
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements-scan.txt
+      - run: python -m unittest discover -s tests -p test_prime_scan.py
+      - run: python tests/test_volbrk_v2.py

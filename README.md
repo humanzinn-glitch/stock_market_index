@@ -1,3 +1,5 @@
+> VOLBRK監査・修正版の仕様と制約は [VOLBRK_AUDIT.md](VOLBRK_AUDIT.md) を参照してください。全件取得・収益性の検証完了を意味しません。
+
 # stock_market_index 拡張パック
 
 このパックは、既存の `stock_market_index` リポジトリを次の構成へ拡張するためのものです。
