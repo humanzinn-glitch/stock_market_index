@@ -20,7 +20,7 @@ ic=col(['コード']); inn=col(['銘柄名']); im=col(['市場・商品区分','
 out=[]
 for r in rows[1:]:
  code=str(r[ic] or '').strip().replace('.0',''); name=str(r[inn] or '').strip(); market=str(r[im] or '')
- if code and name and 'プライム' in market and '外国' not in market:
+ if re.fullmatch(r'[0-9][0-9A-Z]{3}', code) and name and 'プライム' in market and '外国' not in market:
   out.append({'code':code,'company_name':name,'ticker_tse':f'{code}.T'})
 if not (1400 <= len(out) <= 1700): raise SystemExit(f'unexpected Prime count={len(out)}')
 p=Path('data/constituents/tse_prime/current.csv'); p.parent.mkdir(parents=True,exist_ok=True)
