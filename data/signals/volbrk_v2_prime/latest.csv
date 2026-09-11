@@ -1,3 +1,4 @@
 ﻿trade_date,code,company_name,data_status,reason,latest_source_date,close,prior_20d_high,volume,prior_20d_avg_volume,volume_multiple,signal,source
-2026-09-10,5032,ＡＮＹＣＯＬＯＲ,VERIFIED,,2026-09-10,3240.0,3080.0,3324100.0,492780.0,6.74560655870774,True,https://query1.finance.yahoo.com/v8/finance/chart/5032.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
-2026-09-10,7475,アルビス,VERIFIED,,2026-09-10,3700.0,3000.0,79400.0,12970.0,6.121819583654587,True,https://query1.finance.yahoo.com/v8/finance/chart/7475.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-09-11,2371,カカクコム,VERIFIED,,2026-09-11,3796.0,3740.0,651800.0,224880.0,2.8984347207399503,True,https://query1.finance.yahoo.com/v8/finance/chart/2371.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-09-11,2929,ファーマフーズ,VERIFIED,,2026-09-11,692.0,626.0,1441100.0,125515.0,11.4814962355097,True,https://query1.finance.yahoo.com/v8/finance/chart/2929.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-09-11,7475,アルビス,VERIFIED,,2026-09-11,3775.0,3700.0,788400.0,16470.0,47.868852459016395,True,https://query1.finance.yahoo.com/v8/finance/chart/7475.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
