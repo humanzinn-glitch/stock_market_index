@@ -1,5 +1,3 @@
 ﻿trade_date,code,company_name,data_status,reason,latest_source_date,close,prior_20d_high,volume,prior_20d_avg_volume,volume_multiple,signal,source
-2026-09-15,2301,学情,VERIFIED,,2026-09-15,1758.0,1750.0,349100.0,86710.0,4.026063891131358,True,https://query1.finance.yahoo.com/v8/finance/chart/2301.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
-2026-09-15,3393,スターティアホールディングス,VERIFIED,,2026-09-15,3115.0,3085.0,86900.0,29725.0,2.9234650967199327,True,https://query1.finance.yahoo.com/v8/finance/chart/3393.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
-2026-09-15,3657,ポールトゥウィンホールディングス,VERIFIED,,2026-09-15,378.0,374.0,996200.0,159155.0,6.259306964908423,True,https://query1.finance.yahoo.com/v8/finance/chart/3657.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
-2026-09-15,4933,Ｉ－ｎｅ,VERIFIED,,2026-09-15,1681.0,1555.0,143100.0,53560.0,2.67176997759522,True,https://query1.finance.yahoo.com/v8/finance/chart/4933.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-09-16,4933,Ｉ－ｎｅ,VERIFIED,,2026-09-16,2081.0,1681.0,268600.0,57630.0,4.660766961651918,True,https://query1.finance.yahoo.com/v8/finance/chart/4933.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-09-16,4958,長谷川香料,VERIFIED,,2026-09-16,3475.0,3415.0,136600.0,53835.0,2.5373827435683105,True,https://query1.finance.yahoo.com/v8/finance/chart/4958.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
