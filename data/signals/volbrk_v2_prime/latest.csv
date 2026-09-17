@@ -1,3 +1,5 @@
 ﻿trade_date,code,company_name,data_status,reason,latest_source_date,close,prior_20d_high,volume,prior_20d_avg_volume,volume_multiple,signal,source
-2026-09-16,4933,Ｉ－ｎｅ,VERIFIED,,2026-09-16,2081.0,1681.0,268600.0,57630.0,4.660766961651918,True,https://query1.finance.yahoo.com/v8/finance/chart/4933.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
-2026-09-16,4958,長谷川香料,VERIFIED,,2026-09-16,3475.0,3415.0,136600.0,53835.0,2.5373827435683105,True,https://query1.finance.yahoo.com/v8/finance/chart/4958.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-09-17,3657,ポールトゥウィンホールディングス,VERIFIED,,2026-09-17,394.0,387.0,702200.0,210110.0,3.3420589215173004,True,https://query1.finance.yahoo.com/v8/finance/chart/3657.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-09-17,4658,日本空調サービス,VERIFIED,,2026-09-17,1675.0,1633.0,513100.0,110145.0,4.658404829996822,True,https://query1.finance.yahoo.com/v8/finance/chart/4658.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-09-17,4933,Ｉ－ｎｅ,VERIFIED,,2026-09-17,2264.0,2081.0,1594900.0,68635.0,23.237415312887013,True,https://query1.finance.yahoo.com/v8/finance/chart/4933.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-09-17,8848,レオパレス２１,VERIFIED,,2026-09-17,1060.0,941.0,37355200.0,1148655.0,32.520817826066136,True,https://query1.finance.yahoo.com/v8/finance/chart/8848.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
