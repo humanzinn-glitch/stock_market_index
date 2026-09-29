@@ -1,5 +1,6 @@
 ﻿trade_date,code,company_name,data_status,reason,latest_source_date,close,prior_20d_high,volume,prior_20d_avg_volume,volume_multiple,signal,source
-2026-09-28,4967,小林製薬,VERIFIED,,2026-09-28,6920.0,6885.0,1552400.0,217365.0,7.141904170404619,True,https://query1.finance.yahoo.com/v8/finance/chart/4967.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
-2026-09-28,6768,タムラ製作所,VERIFIED,,2026-09-28,910.0,882.0,4054800.0,993865.0,4.079829755550301,True,https://query1.finance.yahoo.com/v8/finance/chart/6768.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
-2026-09-28,7380,十六フィナンシャルグループ,VERIFIED,,2026-09-28,2876.0,2849.0,1329800.0,453135.0,2.9346662694340537,True,https://query1.finance.yahoo.com/v8/finance/chart/7380.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
-2026-09-28,8154,加賀電子,VERIFIED,,2026-09-28,5630.0,5440.0,528300.0,118605.0,4.454281016820539,True,https://query1.finance.yahoo.com/v8/finance/chart/8154.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-09-29,4216,旭有機材,VERIFIED,,2026-09-29,6460.0,6280.0,340300.0,48575.0,7.005661348430262,True,https://query1.finance.yahoo.com/v8/finance/chart/4216.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-09-29,6194,アトラエ,VERIFIED,,2026-09-29,913.0,908.0,613200.0,180220.0,3.4025080457218952,True,https://query1.finance.yahoo.com/v8/finance/chart/6194.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-09-29,6440,ＪＵＫＩ,VERIFIED,,2026-09-29,843.0,812.0,976100.0,357090.0,2.7334845557142455,True,https://query1.finance.yahoo.com/v8/finance/chart/6440.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-09-29,6533,Ｏｒｃｈｅｓｔｒａ　Ｈｏｌｄｉｎｇｓ,VERIFIED,,2026-09-29,1919.0,1528.0,833100.0,23155.0,35.97927013603973,True,https://query1.finance.yahoo.com/v8/finance/chart/6533.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-09-29,7552,ハピネット,VERIFIED,,2026-09-29,4825.0,4335.0,1347300.0,188615.0,7.143122233120377,True,https://query1.finance.yahoo.com/v8/finance/chart/7552.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
