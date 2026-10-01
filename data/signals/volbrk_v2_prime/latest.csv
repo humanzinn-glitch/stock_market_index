@@ -1,7 +1,5 @@
 ﻿trade_date,code,company_name,data_status,reason,latest_source_date,close,prior_20d_high,volume,prior_20d_avg_volume,volume_multiple,signal,source
-2026-09-30,4216,旭有機材,VERIFIED,,2026-09-30,7100.0,6580.0,286600.0,64090.0,4.4718364799500705,True,https://query1.finance.yahoo.com/v8/finance/chart/4216.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
-2026-09-30,4331,テイクアンドギヴ・ニーズ,VERIFIED,,2026-09-30,867.0,759.0,1119600.0,47050.0,23.79596174282678,True,https://query1.finance.yahoo.com/v8/finance/chart/4331.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
-2026-09-30,6194,アトラエ,VERIFIED,,2026-09-30,950.0,914.0,529600.0,203020.0,2.608609989163629,True,https://query1.finance.yahoo.com/v8/finance/chart/6194.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
-2026-09-30,6525,ＫＯＫＵＳＡＩ　ＥＬＥＣＴＲＩＣ,VERIFIED,,2026-09-30,9578.0,9529.0,27498800.0,8459825.0,3.2505164113914886,True,https://query1.finance.yahoo.com/v8/finance/chart/6525.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
-2026-09-30,6908,イリソ電子工業,VERIFIED,,2026-09-30,2948.0,2946.0,342900.0,117645.0,2.9147010072676274,True,https://query1.finance.yahoo.com/v8/finance/chart/6908.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
-2026-09-30,7552,ハピネット,VERIFIED,,2026-09-30,5190.0,4850.0,1031600.0,247270.0,4.1719577789460915,True,https://query1.finance.yahoo.com/v8/finance/chart/7552.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-10-01,3968,セグエグループ,VERIFIED,,2026-10-01,697.0,688.0,643000.0,206095.0,3.119920425046702,True,https://query1.finance.yahoo.com/v8/finance/chart/3968.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-10-01,4216,旭有機材,VERIFIED,,2026-10-01,7180.0,7100.0,239500.0,77000.0,3.1103896103896105,True,https://query1.finance.yahoo.com/v8/finance/chart/4216.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-10-01,4331,テイクアンドギヴ・ニーズ,VERIFIED,,2026-10-01,876.0,875.0,328900.0,100505.0,3.272474006268345,True,https://query1.finance.yahoo.com/v8/finance/chart/4331.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-10-01,6523,ＰＨＣホールディングス,VERIFIED,,2026-10-01,1684.0,1612.0,7439800.0,868315.0,8.568088769628533,True,https://query1.finance.yahoo.com/v8/finance/chart/6523.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
