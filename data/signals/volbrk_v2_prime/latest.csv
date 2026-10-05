@@ -1,3 +1,6 @@
 ﻿trade_date,code,company_name,data_status,reason,latest_source_date,close,prior_20d_high,volume,prior_20d_avg_volume,volume_multiple,signal,source
-2026-10-02,3696,セレス,VERIFIED,,2026-10-02,2284.0,2247.0,552600.0,81235.0,6.802486612913153,True,https://query1.finance.yahoo.com/v8/finance/chart/3696.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
-2026-10-02,6533,Ｏｒｃｈｅｓｔｒａ　Ｈｏｌｄｉｎｇｓ,VERIFIED,,2026-10-02,2022.0,1962.0,466300.0,88275.0,5.282356273010478,True,https://query1.finance.yahoo.com/v8/finance/chart/6533.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-10-05,4973,日本高純度化学,VERIFIED,,2026-10-05,5100.0,4965.0,184500.0,60830.0,3.033042906460628,True,https://query1.finance.yahoo.com/v8/finance/chart/4973.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-10-05,6474,不二越,VERIFIED,,2026-10-05,5780.0,5750.0,289400.0,62230.0,4.650490117306766,True,https://query1.finance.yahoo.com/v8/finance/chart/6474.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-10-05,6652,ＩＤＥＣ,VERIFIED,,2026-10-05,4060.0,3870.0,403500.0,104885.0,3.847070601134576,True,https://query1.finance.yahoo.com/v8/finance/chart/6652.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-10-05,7740,タムロン,VERIFIED,,2026-10-05,1439.0,1395.0,973200.0,370260.0,2.6284232701345003,True,https://query1.finance.yahoo.com/v8/finance/chart/7740.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-10-05,7995,バルカー,VERIFIED,,2026-10-05,7250.0,7110.0,140800.0,49485.0,2.845306658583409,True,https://query1.finance.yahoo.com/v8/finance/chart/7995.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
