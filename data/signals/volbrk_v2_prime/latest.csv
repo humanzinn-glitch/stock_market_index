@@ -1,9 +1,1 @@
 ﻿trade_date,code,company_name,data_status,reason,latest_source_date,close,prior_20d_high,volume,prior_20d_avg_volume,volume_multiple,signal,source
-2026-10-08,2326,デジタルアーツ,VERIFIED,,2026-10-08,5650.0,5560.0,574000.0,143690.0,3.994710835827128,True,https://query1.finance.yahoo.com/v8/finance/chart/2326.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
-2026-10-08,2670,エービーシー・マート,VERIFIED,,2026-10-08,2868.5,2813.0,2057000.0,589590.0,3.488865143574348,True,https://query1.finance.yahoo.com/v8/finance/chart/2670.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
-2026-10-08,3762,テクマトリックス,VERIFIED,,2026-10-08,2969.0,2738.0,1502000.0,285825.0,5.254963701565643,True,https://query1.finance.yahoo.com/v8/finance/chart/3762.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
-2026-10-08,3788,ＧＭＯグローバルサイン・ホールディングス,VERIFIED,,2026-10-08,2237.0,2162.0,153600.0,46955.0,3.271217122777127,True,https://query1.finance.yahoo.com/v8/finance/chart/3788.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
-2026-10-08,4704,トレンドマイクロ,VERIFIED,,2026-10-08,7232.0,7220.0,3583100.0,1254180.0,2.856926437991357,True,https://query1.finance.yahoo.com/v8/finance/chart/4704.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
-2026-10-08,5932,三協立山,VERIFIED,,2026-10-08,729.0,669.0,1150800.0,103465.0,11.122601846034891,True,https://query1.finance.yahoo.com/v8/finance/chart/5932.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
-2026-10-08,6807,日本航空電子工業,VERIFIED,,2026-10-08,2837.0,2821.0,783900.0,288330.0,2.7187597544480284,True,https://query1.finance.yahoo.com/v8/finance/chart/6807.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
-2026-10-08,9889,ＪＢＣＣホールディングス,VERIFIED,,2026-10-08,1838.0,1785.0,548400.0,173180.0,3.1666474188705394,True,https://query1.finance.yahoo.com/v8/finance/chart/9889.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
