@@ -1,4 +1,1 @@
 ﻿trade_date,code,company_name,data_status,reason,latest_source_date,close,prior_20d_high,volume,prior_20d_avg_volume,volume_multiple,signal,source
-2026-10-19,1814,大末建設,VERIFIED,,2026-10-19,4215.0,4055.0,485600.0,92400.0,5.255411255411255,True,https://query1.finance.yahoo.com/v8/finance/chart/1814.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
-2026-10-19,3697,ＳＨＩＦＴ,VERIFIED,,2026-10-19,1116.0,1058.0,21705900.0,4547275.0,4.773386258803349,True,https://query1.finance.yahoo.com/v8/finance/chart/3697.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
-2026-10-19,6532,ベイカレント,VERIFIED,,2026-10-19,10740.0,10195.0,4509500.0,1249335.0,3.6095202647808633,True,https://query1.finance.yahoo.com/v8/finance/chart/6532.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
