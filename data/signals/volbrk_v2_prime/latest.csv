@@ -1,3 +1,1 @@
 ﻿trade_date,code,company_name,data_status,reason,latest_source_date,close,prior_20d_high,volume,prior_20d_avg_volume,volume_multiple,signal,source
-2026-10-26,8070,東京産業,VERIFIED,,2026-10-26,1145.0,1088.0,437600.0,114735.0,3.814006188172746,True,https://query1.finance.yahoo.com/v8/finance/chart/8070.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
-2026-10-26,9729,トーカイ,VERIFIED,,2026-10-26,2937.0,2935.0,118000.0,40490.0,2.914299827117807,True,https://query1.finance.yahoo.com/v8/finance/chart/9729.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
