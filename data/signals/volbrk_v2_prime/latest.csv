@@ -1,1 +1,10 @@
 ﻿trade_date,code,company_name,data_status,reason,latest_source_date,close,prior_20d_high,volume,prior_20d_avg_volume,volume_multiple,signal,source
+2026-11-02,4565,ネクセラファーマ,VERIFIED,,2026-11-02,1585.0,1477.0,4207200.0,1046325.0,4.020930399254533,True,https://query1.finance.yahoo.com/v8/finance/chart/4565.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-11-02,5480,日本冶金工業,VERIFIED,,2026-11-02,5480.0,5380.0,286900.0,49185.0,5.833079190810206,True,https://query1.finance.yahoo.com/v8/finance/chart/5480.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-11-02,7508,Ｇ‐７ホールディングス,VERIFIED,,2026-11-02,1431.0,1409.0,287900.0,86385.0,3.332754529142791,True,https://query1.finance.yahoo.com/v8/finance/chart/7508.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-11-02,7537,丸文,VERIFIED,,2026-11-02,2180.0,2007.0,594400.0,147115.0,4.040376576147912,True,https://query1.finance.yahoo.com/v8/finance/chart/7537.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-11-02,8303,ＳＢＩ新生銀行,VERIFIED,,2026-11-02,1599.5,1561.5,12797200.0,3290680.0,3.888922654284221,True,https://query1.finance.yahoo.com/v8/finance/chart/8303.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-11-02,9267,Ｇｅｎｋｙ　ＤｒｕｇＳｔｏｒｅｓ,VERIFIED,,2026-11-02,3635.0,3520.0,267000.0,67900.0,3.9322533136966125,True,https://query1.finance.yahoo.com/v8/finance/chart/9267.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-11-02,9504,中国電力,VERIFIED,,2026-11-02,1126.0,1041.5,12701200.0,1781115.0,7.131038703284179,True,https://query1.finance.yahoo.com/v8/finance/chart/9504.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-11-02,9658,ビジネスブレイン太田昭和,VERIFIED,,2026-11-02,1506.0,1334.0,1736000.0,132770.0,13.075242901257814,True,https://query1.finance.yahoo.com/v8/finance/chart/9658.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
+2026-11-02,9832,オートバックスセブン,VERIFIED,,2026-11-02,1572.0,1562.0,673900.0,232250.0,2.9016146393972013,True,https://query1.finance.yahoo.com/v8/finance/chart/9832.T?range=3mo&interval=1d&events=history&includeAdjustedClose=false
