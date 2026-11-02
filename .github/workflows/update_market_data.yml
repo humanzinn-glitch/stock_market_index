@@ -2,11 +2,6 @@ name: Update market data
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths: ['scripts/**', 'requirements-scan.txt', '.github/workflows/update_market_data.yml']
-  schedule:
-    - cron: '5 12 * * 1-5'
 
 permissions:
   contents: write
